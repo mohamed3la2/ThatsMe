@@ -25,25 +25,24 @@ namespace ThatsMe.ApiVS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetValues()
         {
+         
+
             var res = await _context.Values.ToListAsync();
             return Ok(res);
         }
+
+    
 
         // GET api/values/5
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetValue(int id)
         {
+            
             var res = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
             return Ok(res);
         }
-        [HttpGet("{name}")]
-        public async Task<IActionResult> GetValuebyName(string name)
-        {
-            var res = await _context.Values.FirstOrDefaultAsync(x => x.Name == name);
-            return Ok(res);
-        }
-
+  
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)
