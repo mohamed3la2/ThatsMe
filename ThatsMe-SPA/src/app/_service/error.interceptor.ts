@@ -19,14 +19,16 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError(error => {
         if (error.status === 401) {
-          return throwError(error.statusText);
+          //return throwError('Unauthorized');
+          return throwError(error.error);
+          console.log(error);
         }
         if (error instanceof HttpErrorResponse){
           const applicationError = error.headers.get('Application-Error');
           if (applicationError){ // Error 500
             return throwError(applicationError);
           }
-          const serverError = error.error ;    
+          const serverError = error.error ;
           let modelStateErrors = '';
           if(serverError && typeof serverError === 'object'){
             for (const key in serverError){

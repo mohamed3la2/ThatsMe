@@ -44,9 +44,10 @@ namespace ThatsMe.ApiVS.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
         {
-            var user = await _repo.Login(loginUserDTO.Username.ToLower(), loginUserDTO.Password);
+            var user = await _repo.Login(loginUserDTO.Username.ToLower(),loginUserDTO.Password);
             if (user == null)
-                return Unauthorized();
+               // return Unauthorized();
+                return StatusCode(401, "Wrong Username or Password");
             var claims = new[]
             {
               new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
