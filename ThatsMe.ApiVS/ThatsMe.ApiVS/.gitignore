@@ -4,3 +4,5 @@ obj
 *.db
 appsettings.json
 .ide-wal
+.suo
+.dtbcache

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -34,9 +35,13 @@ namespace ThatsMe.ApiVS
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(db => db.UseSqlServer(Configuration.GetConnectionString("Default")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(opt => { opt.SerializerSettings.ReferenceLoopHandling =
+                                        Newtonsoft.Json.ReferenceLoopHandling.Ignore;});
             services.AddCors();
+            services.AddAutoMapper(typeof(ThatsMeRepo).Assembly);
             services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddScoped<IThatsMeRepo, ThatsMeRepo>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {

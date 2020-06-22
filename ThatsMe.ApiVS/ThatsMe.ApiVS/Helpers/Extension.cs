@@ -14,5 +14,12 @@ namespace ThatsMe.ApiVS.Helpers
             response.Headers.Add("Access-Control-Expose-Headers", "Application-Error");
             response.Headers.Add("Access-Control-Allow-Origin", "*");
         }
+        public static int CalculateAge(this DateTime hisDate)
+        {
+            var age = DateTime.Today.Year - hisDate.Year;
+            if (hisDate.AddYears(age) > DateTime.Today)
+                age--;
+            return age; 
+        }
     }
 }

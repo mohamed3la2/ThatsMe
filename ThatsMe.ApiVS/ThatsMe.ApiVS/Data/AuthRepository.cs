@@ -14,6 +14,7 @@ namespace ThatsMe.ApiVS.Data
         public AuthRepository(DataContext context)
         {
             _context = context;
+           
         }
         public async Task<User> Login(string username, string password)
         {

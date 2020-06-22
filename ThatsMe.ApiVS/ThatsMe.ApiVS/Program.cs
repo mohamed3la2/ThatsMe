@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using ThatsMe.ApiVS.Data;
 
 namespace ThatsMe.ApiVS
 {
@@ -14,7 +12,25 @@ namespace ThatsMe.ApiVS
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var host = CreateWebHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var service = scope.ServiceProvider;
+                try
+                {
+                    var context = service.GetRequiredService<DataContext>();
+                    context.Database.Migrate();
+                    Seed.SeedData(context);
+
+                }
+                catch (Exception ex)
+                {
+                    var logger = service.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Error during Migration ");
+
+                }
+            }
+            host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
