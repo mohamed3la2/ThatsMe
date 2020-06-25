@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,20 @@ namespace ThatsMe.ApiVS.Controllers
             var user = await _repo.GetUser(id);
             var userToReturn = _mapper.Map<UserForDetailedDTO>(user);
             return Ok(userToReturn);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserForUpdate userForUpdate)
+        {
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value)) //prevent the user editing another user info
+            {
+                return StatusCode(401, "UnAuthorized");
+            }
+            var userFromRepo = await _repo.GetUser(id);
+            _mapper.Map(userForUpdate, userFromRepo);
+            if (await _repo.SaveAll())
+                return NoContent();
+            throw new Exception("fail Updating request"); 
         }
     }
 }
