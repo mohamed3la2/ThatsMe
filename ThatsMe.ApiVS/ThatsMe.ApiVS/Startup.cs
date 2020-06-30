@@ -39,7 +39,9 @@ namespace ThatsMe.ApiVS
                 .AddJsonOptions(opt => { opt.SerializerSettings.ReferenceLoopHandling =
                                         Newtonsoft.Json.ReferenceLoopHandling.Ignore;});
             services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper(typeof(ThatsMeRepo).Assembly);
+            services.AddTransient<Seed>();
             services.AddScoped<IAuthRepository,AuthRepository>();
             services.AddScoped<IThatsMeRepo, ThatsMeRepo>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

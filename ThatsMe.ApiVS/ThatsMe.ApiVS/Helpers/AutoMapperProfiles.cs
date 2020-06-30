@@ -26,6 +26,8 @@ namespace ThatsMe.ApiVS.Helpers
             CreateMap<Photo, PhotoForDetailedDTO>();
 
             CreateMap<UserForUpdate, User>();
+            CreateMap<Photo,PhotoForReturnDTO>();
+            CreateMap<PhotoForCreatingDTO,Photo>();
         }
     }
 }

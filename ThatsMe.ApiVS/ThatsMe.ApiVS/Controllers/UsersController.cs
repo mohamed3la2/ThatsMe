@@ -49,7 +49,7 @@ namespace ThatsMe.ApiVS.Controllers
                 return StatusCode(401, "UnAuthorized");
             }
             var userFromRepo = await _repo.GetUser(id);
-            _mapper.Map(userForUpdate, userFromRepo);
+            _mapper.Map(userForUpdate, userFromRepo); 
             if (await _repo.SaveAll())
                 return NoContent();
             throw new Exception("fail Updating request"); 

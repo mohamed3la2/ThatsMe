@@ -8,6 +8,7 @@ import {TabsModule} from 'ngx-bootstrap/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { NgxGalleryModule } from 'ngx-gallery-9';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 import { NavComponent } from './nav/nav.component';
@@ -28,6 +29,7 @@ import { MemberListResolverService } from './_resolvers/member-list-resolver.ser
 import {MemberEditComponent } from './Members/member-edit/member-edit.component' ;
 import { MemberEditResolverService } from './_resolvers/member-edit-resolver.service';
 import { PreventUnsavedChanges } from './_guard/prevent-unsaved-changes.guard';
+import { PhotoEditorComponent } from './Members/photo-editor/photo-editor.component';
 
 export function tokenGetter(){
    return localStorage.getItem('token');
@@ -45,7 +47,8 @@ export function tokenGetter(){
       MessagesComponent,
       MemberCardComponent,
       MemberDetailsComponent,
-      MemberEditComponent
+      MemberEditComponent,
+      PhotoEditorComponent
    ],
    imports: [
       BrowserModule,
@@ -56,6 +59,7 @@ export function tokenGetter(){
       TabsModule.forRoot(),
       RouterModule.forRoot(appRoutes),
       NgxGalleryModule,
+      FileUploadModule,
       JwtModule.forRoot({
          config: {
             // tslint:disable-next-line: object-literal-shorthand

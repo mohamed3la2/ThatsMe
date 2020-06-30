@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ThatsMe.ApiVS.Models
+namespace ThatsMe.ApiVS.DTO
 {
-    public class Photo
+    public class PhotoForReturnDTO
     {
         public int Id { get; set; }
         public string Url { get; set; }
@@ -10,9 +13,5 @@ namespace ThatsMe.ApiVS.Models
         public string Description { get; set; }
         public DateTime AddedIn { get; set; }
         public bool IsMain { get; set; }
-        //user can't be Null with cascade delete so if we remove user photos removed too
-        public User User { get; set; }
-        public int UserId { get; set; }
-
     }
 }
