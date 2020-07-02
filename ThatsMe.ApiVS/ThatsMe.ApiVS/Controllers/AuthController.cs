@@ -36,12 +36,12 @@ namespace ThatsMe.ApiVS.Controllers
             registerUserDTO.Username = registerUserDTO.Username.ToLower();
             if (await _repo.UserExists(registerUserDTO.Username))
                 return BadRequest("Username Already Taken");
-            User user = new User
-            {
-                Username = registerUserDTO.Username
-            };
-            await _repo.Register(user, registerUserDTO.Password);
-            return StatusCode(201);
+
+            var userForRegister = _mapper.Map<User>(registerUserDTO);
+            await _repo.Register(userForRegister, registerUserDTO.Password);
+            var usertoReturn = _mapper.Map<UserForDetailedDTO>(userForRegister);
+
+            return CreatedAtRoute("GetUser", new { controller = "Users", id = userForRegister.Id }, usertoReturn);
         }
 
         [HttpPost("Login")]

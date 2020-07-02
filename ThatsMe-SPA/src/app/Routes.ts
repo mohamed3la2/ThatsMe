@@ -27,7 +27,7 @@ export const appRoutes: Routes = [
             }},
             { path : 'member/edit', component : MemberEditComponent, resolve: {
                 user: MemberEditResolverService
-            },canDeactivate : [PreventUnsavedChanges]},
+            }, canDeactivate : [PreventUnsavedChanges]},
             { path : 'lists', component : ListsComponent},
             { path : 'messages', component : MessagesComponent}
         ]
