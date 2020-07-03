@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ThatsMe.ApiVS.Data;
 using ThatsMe.ApiVS.DTO;
+using ThatsMe.ApiVS.Helpers;
 
 namespace ThatsMe.ApiVS.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]

@@ -1,16 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, Pipe } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AppComponent } from './app.component';
+import { appRoutes } from './Routes';
 import {HttpClientModule} from '@angular/common/http';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
 import {TabsModule} from 'ngx-bootstrap/tabs';
 import { RouterModule } from '@angular/router';
 import { NgxGalleryModule } from 'ngx-gallery-9';
+import { TimeagoModule } from 'ngx-timeago';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FileUploadModule } from 'ng2-file-upload';
-
 
 
 import { NavComponent } from './nav/nav.component';
@@ -21,7 +22,6 @@ import { ErrorInterceptorProvider } from './_service/error.interceptor';
 import { MemberListComponent } from './Members/Member-list/Member-list.component';
 import { ListsComponent } from './lists/lists.component';
 import { MessagesComponent } from './Messages/Messages.component';
-import { appRoutes } from './Routes';
 import { UserService } from './_service/user.service';
 import { MemberCardComponent } from './Members/member-card/member-card.component';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -33,9 +33,16 @@ import { MemberEditResolverService } from './_resolvers/member-edit-resolver.ser
 import { PreventUnsavedChanges } from './_guard/prevent-unsaved-changes.guard';
 import { PhotoEditorComponent } from './Members/photo-editor/photo-editor.component';
 
+// export class TimeAgoExtendsPipe extends TimeAgoPipe {}
+// @Pipe({
+//    name: 'timeAgo',
+//    pure: false
+// })
+
 export function tokenGetter(){
    return localStorage.getItem('token');
 }
+
 
 @NgModule({
    declarations: [
@@ -63,6 +70,7 @@ export function tokenGetter(){
       TabsModule.forRoot(),
       RouterModule.forRoot(appRoutes),
       NgxGalleryModule,
+      TimeagoModule.forRoot(),
       BsDatepickerModule.forRoot(),
       FileUploadModule,
       JwtModule.forRoot({

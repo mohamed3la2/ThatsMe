@@ -22,6 +22,8 @@ namespace ThatsMe.ApiVS.DTO
         public string City { get; set; }
         [Required]
         public string Country { get; set; }
+        public DateTime DateOfBirth { get; set; }
+
         public DateTime CreatedIn { get; set; }
         public DateTime LastActive { get; set; }
         public RegisterUserDTO()
