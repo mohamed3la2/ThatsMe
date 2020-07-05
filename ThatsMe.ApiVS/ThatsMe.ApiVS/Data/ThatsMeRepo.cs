@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ThatsMe.ApiVS.Helpers;
 using ThatsMe.ApiVS.Models;
 
 namespace ThatsMe.ApiVS.Data
@@ -42,10 +43,34 @@ namespace ThatsMe.ApiVS.Data
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<PageList<User>> GetUsers(UserParams userParams)
         {
-            var users = await _context.Users.Include(u => u.Photos).ToListAsync();
-            return users; 
+            var users = _context.Users.Include(u => u.Photos).OrderByDescending(u => u.LastActive).AsQueryable();
+
+            users = users.Where(u => u.Id != userParams.UserId);
+            users = users.Where(u => u.Gender == userParams.Gender);
+
+            if (userParams.MinAge != 18 || userParams.MaxAge != 99)
+            {
+                var minDoB = DateTime.Today.AddYears(-userParams.MaxAge -1);
+                var maxDoB = DateTime.Today.AddYears(-userParams.MinAge);
+
+                users = users.Where(u => u.DateOfBirth >= minDoB && u.DateOfBirth <= maxDoB);
+            }
+            if (!string.IsNullOrEmpty(userParams.OrderBy))
+            {
+                switch(userParams.OrderBy)
+                {
+                    case "created":
+                        users = users.OrderByDescending(u => u.CreatedIn);
+                        break;
+                    default :
+                        users = users.OrderByDescending(u => u.LastActive);
+                        break;
+                }
+            }
+
+            return await PageList<User>.CreateAsync(users,userParams.PageNumber , userParams.PageSize); 
         }
 
         public async Task<bool> SaveAll()

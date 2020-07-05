@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../_models/User';
-import { retry } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { PaginationResult } from '../_models/Pagination';
 
 /*const httpOption = {
   headers: new HttpHeaders({
@@ -19,8 +20,29 @@ export class UserService {
   baseUrl = environment.apiUrl ;
   constructor(private http: HttpClient) { }
 
-getUsers(): Observable<User[]>{
-  return this.http.get<User[]>(this.baseUrl + 'users/');
+getUsers(page?, itemsPerPage?, userParams?): Observable<PaginationResult<User[]>>{
+  const paginationResult: PaginationResult<User[]> = new PaginationResult<User[]>();
+  let params = new HttpParams();
+  if (page != null && itemsPerPage != null) {
+    params = params.append('pageNumber' , page);
+    params = params.append('pageSize' , itemsPerPage);
+  }
+  if (userParams != null){
+    params = params.append('gender', userParams.gender);
+    params = params.append('minAge', userParams.minAge);
+    params = params.append('maxAge', userParams.maxAge);
+    params = params.append('orderBy', userParams.orderBy);
+  }
+  return this.http.get<User[]>(this.baseUrl + 'users', { observe: 'response', params})
+  .pipe(
+    map(response => {
+      paginationResult.result = response.body;
+      if (response.headers.get('Pagination') != null){
+        paginationResult.pagination = JSON.parse(response.headers.get('Pagination'));
+      }
+      return paginationResult ;
+    })
+  );
 }
 
 getUser(id): Observable<User>{
@@ -33,7 +55,7 @@ updateUser(id: number, user: User){
 setMainPhoto(userId: number, id: number){
   return this.http.post( this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain' , {});
 }
-DeletePhoto(userId: number , id:number){
+DeletePhoto(userId: number , id: number){
   return this.http.delete(this.baseUrl + 'users/' + userId + '/photos/' + id );
 }
 }

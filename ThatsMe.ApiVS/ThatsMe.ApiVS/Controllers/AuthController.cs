@@ -55,6 +55,7 @@ namespace ThatsMe.ApiVS.Controllers
             {
               new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
               new Claim(ClaimTypes.Name,user.Username)
+              
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.    
                 UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
