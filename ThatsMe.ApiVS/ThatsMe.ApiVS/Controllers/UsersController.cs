@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using ThatsMe.ApiVS.Data;
 using ThatsMe.ApiVS.DTO;
 using ThatsMe.ApiVS.Helpers;
+using ThatsMe.ApiVS.Models;
 
 namespace ThatsMe.ApiVS.Controllers
 {
@@ -36,13 +37,18 @@ namespace ThatsMe.ApiVS.Controllers
             userParams.UserId = userId;
             if (string.IsNullOrEmpty(userParams.Gender))
             {
-               userParams.Gender = user.Gender == "male" ? "female" : "male" ;
+                userParams.Gender = user.Gender == "male" ? "female" : "male";
             }
-            
+            if (userParams.Gender == "all")
+            {
+                userParams.Gender = "all";
+            }
+
+
 
 
             var users = await _repo.GetUsers(userParams);
-            var usersToReturn =  _mapper.Map<IEnumerable<UserForListDTO>>(users);
+            var usersToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(users);
             Response.AddPaginationHeaders(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
             return Ok(usersToReturn);
@@ -62,11 +68,37 @@ namespace ThatsMe.ApiVS.Controllers
             {
                 return StatusCode(401, "UnAuthorized");
             }
+
             var userFromRepo = await _repo.GetUser(id);
-            _mapper.Map(userForUpdate, userFromRepo); 
+            _mapper.Map(userForUpdate, userFromRepo);
             if (await _repo.SaveAll())
                 return NoContent();
-            throw new Exception("fail Updating request"); 
+            throw new Exception("fail Updating request");
+        }
+        [HttpPost("{id}/like/{recipientId}")]
+        public async Task<IActionResult>LikeUser(int id, int recipientId)
+        {
+            if(id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return StatusCode(401, "Unauthorized");
+            }
+            if (await _repo.GetUser(recipientId) == null)
+                return NotFound();
+
+            var like = await _repo.GetLike(id, recipientId);
+            if (like != null)
+                return BadRequest("You already liked this user");
+
+            like = new Like
+            {
+                LikerId =id,
+                LikeeId = recipientId
+            };
+            _repo.Add<Like>(like);
+
+            if (await _repo.SaveAll())
+                return Ok();
+            return BadRequest("Something went wrong");
         }
     }
 }

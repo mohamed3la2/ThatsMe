@@ -15,6 +15,7 @@ namespace ThatsMe.ApiVS.Data
         Task<Photo> GetPhoto(int id);
         Task<PageList<User>> GetUsers(UserParams userParams);
         Task<Photo> GetMainPhoto(int userId);
+        Task<Like> GetLike(int id, int recipientId);
         Task<bool> SaveAll();
 
     }
