@@ -14,6 +14,7 @@ namespace ThatsMe.ApiVS.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public DataContext(DbContextOptions<DataContext> option):base(option)
         {       
@@ -25,7 +26,13 @@ namespace ThatsMe.ApiVS.Data
             builder.Entity<Like>().HasOne(k => k.Liker).WithMany(u => u.Likees)
                 .HasForeignKey(k => k.LikerId).OnDelete(DeleteBehavior.Restrict);
             builder.Entity<Like>().HasOne(k => k.Likee).WithMany(u => u.Likers)
-                .HasForeignKey(k => k.LikeeId).OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);
+            //////////////////////////////////////////////
+            
+            builder.Entity<Message>().HasOne(m => m.Sender).WithMany(u => u.MessagesSent)
+                .HasForeignKey(m => m.SenderId).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Message>().HasOne(m => m.Recipient).WithMany(u => u.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }

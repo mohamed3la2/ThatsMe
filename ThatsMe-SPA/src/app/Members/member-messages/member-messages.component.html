@@ -1,0 +1,56 @@
+<div class="card">
+  <h3 *ngIf="messages?.length === 0" class="text-center "> No Messages Say Hi </h3>
+  <div *ngIf="messages?.length !== 0" class="card-body">
+    
+   <ul class="chat">
+     <li *ngFor="let msg of messages">
+       <!-- to them -->
+       <div class="chat-body" *ngIf="msg.senderId == recipientId"> 
+         <span class="chat-img float-left mr-2">
+           <img src="{{msg.senderPhotoUrl}}" alt="{{msg.senderKnownAs}}" class="rounded-circle">
+         </span>
+         <div class="chat-body">
+           <div class="header">
+             <strong class="primary-font">{{msg.senderKnownAs}}</strong>
+             <small class="text-mute float-right">
+               <span class="fa fa-clock-o">{{msg.messageSent | timeago}}</span>
+              </small>
+           </div>
+           <p>{{msg.content}}</p>
+         </div>
+       </div>
+       <!-- to me -->
+       <div class="chat-body" *ngIf="msg.senderId != recipientId"> 
+        <span class="chat-img float-right ml-2">
+          <img src="{{msg.senderPhotoUrl}}" alt="{{msg.senderKnownAs}}" class="rounded-circle">
+        </span>
+        <div class="chat-body">
+          <div class="header">
+            <small class="text-mute">
+              <span class="fa fa-clock-o">{{msg.messageSent | timeago}}</span>
+              <span *ngIf="!msg.isRead" class="text-danger">(Unread)</span>
+              <span *ngIf="msg.isRead" class="text-success">(Read {{msg.dateRead |timeago}})</span>
+             </small>
+             
+            <strong class="primary-font float-right">{{msg.senderKnownAs}}</strong>
+            <p class="text-right">{{msg.content}}</p>
+          </div>
+          
+        </div>    
+      </div>
+
+     </li>
+   </ul>
+  </div>
+  <div class="card-footer">
+    <form #SendMsgForm="ngForm" (ngSubmit)="SendMsgForm.valid && SendMessage()">
+      <div class="input-group">
+        <input type="text" class="form-control input-sm" placeholder="Send Private Message"
+         [(ngModel)]="newMsg.content" name="content" required>
+        <div class="input-group-append">
+          <button class="btn btn-primary"[disabled]="!SendMsgForm.valid">Send</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

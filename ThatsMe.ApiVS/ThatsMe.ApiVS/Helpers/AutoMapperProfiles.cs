@@ -29,6 +29,10 @@ namespace ThatsMe.ApiVS.Helpers
             CreateMap<Photo,PhotoForReturnDTO>();
             CreateMap<PhotoForCreatingDTO,Photo>();
             CreateMap<RegisterUserDTO, User>();
+            CreateMap<MessageForCreateDTO, Message>().ReverseMap();
+            CreateMap<Message, MessageToReturnDTO>()
+                .ForMember(mtr => mtr.SenderPhotoUrl, opt => opt.MapFrom(m => m.Sender.Photos.FirstOrDefault(p => p.IsMain).Url))
+                .ForMember(mtr => mtr.RecipientPhotoUrl, opt => opt.MapFrom(m => m.Recipient.Photos.FirstOrDefault(p => p.IsMain).Url));
         }
     }
 }

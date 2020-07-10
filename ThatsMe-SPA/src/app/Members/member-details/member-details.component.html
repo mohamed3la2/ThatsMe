@@ -27,14 +27,14 @@
         <div class="card-footer">
           <div class="btn-group d-flex">
             <button class="btn btn-danger w-100"> <i class="fa fa-heart"></i> Like</button>
-            <button class="btn btn-primary w-100"> <i class="fa fa-envelope"></i> Message</button>
+            <button class="btn btn-primary w-100" (click)="selectTab(3)"> <i class="fa fa-envelope"></i> Message</button>
           </div>
         </div>
       </div>
     </div>
     <div class="col col-sm-8">
       <div class="tabs-panel mt-1">
-        <tabset class="member-tabset">
+        <tabset class="member-tabset" #memberTabs>
           <tab heading="About {{user.knownAs}}">
             <h3>Description</h3>
             <p>{{user.introduction}}</p>
@@ -50,7 +50,7 @@
             <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
           </tab>
           <tab heading="Messages">
-            <p>User's Messages</p>
+            <app-member-messages [recipientId] ="user.id"></app-member-messages> 
           </tab>
 
         </tabset>

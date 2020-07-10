@@ -18,5 +18,8 @@ namespace ThatsMe.ApiVS.Data
         Task<Like> GetLike(int id, int recipientId);
         Task<bool> SaveAll();
 
+        Task<Message> GetMessage(int id);
+        Task<PageList<Message>> GetMessagesForUser(MessageParams messageParams);
+        Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
     }
 }
