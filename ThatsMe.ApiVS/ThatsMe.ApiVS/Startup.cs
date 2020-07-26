@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ThatsMe.ApiVS.Data;
 using ThatsMe.ApiVS.Helpers;
+using ThatsMe.ApiVS.Hubs;
 
 namespace ThatsMe.ApiVS
 {
@@ -35,7 +36,7 @@ namespace ThatsMe.ApiVS
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(db => db.UseSqlServer(Configuration.GetConnectionString("Default")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(opt => { opt.SerializerSettings.ReferenceLoopHandling =
                                         Newtonsoft.Json.ReferenceLoopHandling.Ignore;});
             services.AddCors();
@@ -57,6 +58,8 @@ namespace ThatsMe.ApiVS
                     };
                 });
             services.AddScoped<LogUserActivity>();
+            services.AddSignalR();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,9 +89,16 @@ namespace ThatsMe.ApiVS
             }
 
             //  app.UseHttpsRedirection();
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
+            app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+
+            app.UseSignalR(options =>
+            {
+                options.MapHub<MessageHub>("/chat");
+            });
             app.UseMvc();
+
+           
         }
     }
 }

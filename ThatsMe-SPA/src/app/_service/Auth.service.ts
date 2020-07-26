@@ -41,7 +41,7 @@ Register(user: User){
   return this.http.post(this.baseURL + 'register' , user);
 }
 LoggedIn(){
-  var token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
   return !this.jwtHelper.isTokenExpired(token);
 
 }

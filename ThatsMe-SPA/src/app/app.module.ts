@@ -37,12 +37,8 @@ import { PhotoEditorComponent } from './Members/photo-editor/photo-editor.compon
 import { ListsResolver } from './_resolvers/Lists.Resolver';
 import { MessagesResolver } from './_resolvers/Messages.resolver';
 import { MemberMessagesComponent } from './Members/member-messages/member-messages.component';
+import { ChatService } from './_service/Chat.service';
 
-// export class TimeAgoExtendsPipe extends TimeAgoPipe {}
-// @Pipe({
-//    name: 'timeAgo',
-//    pure: false
-// })
 
 export function tokenGetter(){
    return localStorage.getItem('token');
@@ -99,7 +95,8 @@ export function tokenGetter(){
       MemberEditResolverService,
       PreventUnsavedChanges,
       ListsResolver,
-      MessagesResolver
+      MessagesResolver,
+      ChatService
    ],
    bootstrap: [
       AppComponent

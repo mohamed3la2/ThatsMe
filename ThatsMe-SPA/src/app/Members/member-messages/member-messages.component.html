@@ -20,7 +20,7 @@
          </div>
        </div>
        <!-- to me -->
-       <div class="chat-body" *ngIf="msg.senderId != recipientId"> 
+       <div class="chat-body" *ngIf="msg.recipientId == recipientId"> 
         <span class="chat-img float-right ml-2">
           <img src="{{msg.senderPhotoUrl}}" alt="{{msg.senderKnownAs}}" class="rounded-circle">
         </span>
@@ -35,7 +35,6 @@
             <strong class="primary-font float-right">{{msg.senderKnownAs}}</strong>
             <p class="text-right">{{msg.content}}</p>
           </div>
-          
         </div>    
       </div>
 

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { User } from '../_models/User';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { PaginationResult } from '../_models/Pagination';
 import { Message } from '../_models/Message';
+// import * as socketIo from 'socket.io-client';
 
 /*const httpOption = {
   headers: new HttpHeaders({
@@ -19,6 +20,9 @@ import { Message } from '../_models/Message';
 export class UserService {
 
   baseUrl = environment.apiUrl ;
+  // chatObserver: Observer<any>;
+  chatUrl = environment.chatUrl;
+
   constructor(private http: HttpClient) { }
 
 getUsers(page?, itemsPerPage?, userParams?, likeParams?): Observable<PaginationResult<User[]>>{
@@ -40,7 +44,7 @@ getUsers(page?, itemsPerPage?, userParams?, likeParams?): Observable<PaginationR
   if (likeParams === 'Likees'){
     params = params.append('likees', 'true');
   }
-  
+
   return this.http.get<User[]>(this.baseUrl + 'users', { observe: 'response', params})
   .pipe(
     map(response => {
@@ -56,6 +60,15 @@ getUsers(page?, itemsPerPage?, userParams?, likeParams?): Observable<PaginationR
 getUser(id): Observable<User>{
   return this.http.get<User>(this.baseUrl + 'users/' + id);
 }
+
+// CheckUserExist(id: number){
+//   debugger;
+//   let user: User;
+//   this.getUser(id).pipe( map( response => {
+//     user = response;
+//   }));
+
+// }
 
 updateUser(id: number, user: User){
   return this.http.put(this.baseUrl + 'users/' + id, user );
@@ -94,6 +107,17 @@ getMessagesThread(senderId: number , recipientId: number){
 
   return this.http.get<Message[]>(this.baseUrl + '/users/' + senderId + '/messages/thread/' + recipientId) ;
 }
+// getMessagesThread2(senderId: number , recipientId: number){
+
+//   const socket = socketIo(this.chatUrl);
+//   socket.on('data', response => {
+//     return this.chatObserver.next(response.data);
+//   });
+//   return this.createObservable();
+// }
+// createObservable() {
+//   return new Observable(observer => this.chatObserver = observer);
+// }
 SendMessage(id: number, message: Message){
   return this.http.post( this.baseUrl + '/users/' + id + '/messages' , message);
 }

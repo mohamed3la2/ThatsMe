@@ -7,9 +7,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ThatsMe.ApiVS.Data;
 using ThatsMe.ApiVS.DTO;
 using ThatsMe.ApiVS.Helpers;
+using ThatsMe.ApiVS.Hubs;
 using ThatsMe.ApiVS.Models;
 
 namespace ThatsMe.ApiVS.Controllers
@@ -22,11 +24,13 @@ namespace ThatsMe.ApiVS.Controllers
     {
         private readonly IThatsMeRepo _repo;
         private readonly IMapper _mapper;
+        private readonly IHubContext<MessageHub> _hubContext;
 
-        public MessagesController(IThatsMeRepo repo, IMapper mapper)
+        public MessagesController(IThatsMeRepo repo, IMapper mapper,IHubContext<MessageHub> hubContext)
         {
             _repo = repo;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
 
 
@@ -69,10 +73,14 @@ namespace ThatsMe.ApiVS.Controllers
                 return BadRequest("User doesn't exist anymore");
 
             var messagesThreadFromRepo = await _repo.GetMessageThread(userId, recipientId);
+            messagesThreadFromRepo.Where(m => m.RecipientId == userId).ToList().ForEach(mm => mm.IsRead = true);
+            messagesThreadFromRepo.Where(m => m.RecipientId == userId).ToList().ForEach(mm => mm.DateRead = DateTime.Now);
             var messagesThreadToReturn = _mapper.Map<IEnumerable<MessageToReturnDTO>>(messagesThreadFromRepo);
-
+           
+            await _repo.SaveAll();
             return Ok(messagesThreadToReturn);
 
+          
 
         }
 
@@ -96,6 +104,12 @@ namespace ThatsMe.ApiVS.Controllers
             if (await _repo.SaveAll())
             {
                 var messageToReturn = _mapper.Map<MessageToReturnDTO>(message);
+                string connectionId; 
+                if (ConnectedUser.UserConnectedList.TryGetValue(messageForCreateDTO.RecipientId, out connectionId))
+                {
+                    messageToReturn.IsRead = true;
+                    await _hubContext.Clients.Client(connectionId).SendAsync("newmsg",messageToReturn);
+                }
                 return CreatedAtRoute("GetMessage", new { id = message.Id }, messageToReturn);
             }
 
